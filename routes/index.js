@@ -6,4 +6,12 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get("/about", function(req, res, next) {
+  res.render("about", { title: "About Geobound"});
+});
+
+router.get("/contact", function(req, res, next) {
+  res.render("contact", { title: "Contact"});
+});
+
 module.exports = router;
