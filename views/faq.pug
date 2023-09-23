@@ -1,0 +1,105 @@
+extends layout
+
+block content
+    // ---Header section
+    section#header(style='min-height: 50vh;')
+      my-header
+      .intro
+        .caption
+          p Frequently Asked Questions
+    // About Us Info
+    section#info
+      .faq-header
+      .faq-content
+        .faq-question
+          input#q1.panel(type='checkbox')
+          .plus +
+          label.panel-title(for='q1')
+            | Is GeoBound a paid service?
+          .panel-content
+            | GeoBound is a completely free to use service with no add-ons.
+        .faq-question
+          input#q2.panel(type='checkbox')
+          .plus +
+          label.panel-title(for='q2') Does GeoBound offer a premium service?
+          .panel-content
+            | The full experience is completely free of charge through our web application
+        .faq-question
+          input#q3.panel(type='checkbox')
+          .plus +
+          label.panel-title(for='q3') Who developed it
+          .panel-content
+            | your mom
+
+    style.
+      @import url(https://fonts.googleapis.com/css?family=Raleway);
+      body {
+      overflow-x: hidden;
+      }
+      .faq-header{
+      font-size: 42px;
+      border-bottom: 1px dotted #ccc;
+      padding: 24px;
+      }
+      .faq-content {
+      margin: 0 auto;
+      }
+      .faq-question {
+      padding: 20px 0;
+      border-bottom: 1px dotted #ccc;
+      }
+      .panel-title {
+      font-size: 24px;
+      width: 100%;
+      position: relative;
+      margin: 0;
+      padding: 10px 10px 0 48px;
+      display: block;
+      cursor: pointer;
+      }
+      .panel-content {
+      font-size: 15px;
+      padding: 0px 14px;
+      margin: 0 40px;
+      height: 0;
+      overflow: hidden;
+      z-index: -1;
+      position: relative;
+      opacity: 0;
+      -webkit-transition: .4s ease;
+      -moz-transition: .4s ease;
+      -o-transition: .4s ease;
+      transition: .4s ease;
+      }
+      .panel:checked ~ .panel-content{
+      height: auto;
+      opacity: 1;
+      padding: 14px;
+      }
+      .plus {
+      position: absolute;
+      margin-left: 10px;
+      margin-top: 8px;
+      z-index: 5;
+      font-size: 42px;
+      line-height: 100%;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+      -webkit-transition: .2s ease;
+      -moz-transition: .2s ease;
+      -o-transition: .2s ease;
+      transition: .2s ease;
+      }
+      .panel:checked ~ .plus {
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+      color: var(--primary-color);
+      }
+      .panel {
+      display: none;
+      }

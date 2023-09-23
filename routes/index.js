@@ -14,4 +14,8 @@ router.get("/contact", function(req, res, next) {
   res.render("contact", { title: "Contact"});
 });
 
+router.get("/faq", function(req, res, next) {
+  res.render("faq", { title: "FAQ"});
+});
+
 module.exports = router;
