@@ -1,8 +1,24 @@
+html {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    background-color: #FAFAFF;
+}
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1;
+    background-color: #FAFAFF;
 }
 
-a {
-  color: #00B7FF;
+main {
+    flex: 1;
 }
+
+footer {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    text-align: center;
+    margin-top: auto;
+}
+
