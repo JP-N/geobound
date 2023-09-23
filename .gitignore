@@ -1,2 +1,18 @@
-/.idea/
-/node_modules/
+# npm stuff
+node_modules/
+.node_modules/
+npm-debug.log*
+
+# node
+.node_repl_history
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# os-specific garbage
+.DS_STORE
+Thumbs.db
+
+# editors
+.vscode/
+.vscode-test/
+*.iml
+.idea
