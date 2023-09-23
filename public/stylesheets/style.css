@@ -14,12 +14,14 @@ body {
 
 main {
     flex: 1;
+    padding: 2em;
 }
 
 footer {
+    position: absolute; /* might cause issues later, oh well */
     background-color: rgba(0, 0, 0, 0.2);
     padding: 1rem;
-    text-align: center;
-    margin-bottom: auto;
+    bottom: 0;
+    width: 100%;
 }
 
