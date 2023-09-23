@@ -3,8 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
 var mongodb = require("mongodb");
 var { createClient } = require('redis');
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://jpnogax:6QjqN7o8Swxvdjqu@cluster0.mkhv0jg.mongodb.net/?retryWrites=true&w=majority";
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -22,6 +26,29 @@ const config = {
   clientID: 'OhWMIGiRD314Mk8Wo7xElUkO9WokSVe3',
   issuerBaseURL: 'https://dev-mg2bbanln4b8fu3b.us.auth0.com'
 };
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const mongoClient = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await mongoClient.connect();
+    // Send a ping to confirm a successful connection
+    await mongoClient.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await mongoClient.close();
+  }
+}
+run().catch(console.dir);
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
