@@ -11,7 +11,7 @@ var app = express();
 
 // TILE 38 Connection
 var Tile38 = require('tile38');
-var client = new Tile38();
+var client = new Tile38({host: 'localhost3000', port: 3000, debug: true });
 
 // save a location in format (group, key, cords)
 client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
