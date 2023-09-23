@@ -12,7 +12,7 @@ var app = express();
 
 // Tile38 Connection
 var Tile38 = require('tile38');
-var client = new Tile38({host: 'localhost', port: 9851, debug: true });
+var client = new Tile38({host: '172.17.51.158', port: 9851, debug: true });
 
 // save a location in format (group, key, cords)
 client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
