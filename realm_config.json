@@ -1,0 +1,8 @@
+{
+    "app_id": "application-0-tbqdo",
+    "config_version": 20210101,
+    "name": "Application-0",
+    "location": "US-VA",
+    "provider_region": "azure-eastus2",
+    "deployment_model": "LOCAL"
+}
