@@ -2,15 +2,29 @@ html {
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     line-height: 1;
-    background-color: #FAFAFF;
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1;
     background-color: #FAFAFF;
+    background-image: url('Splash.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-attachment: fixed;
 }
+
+
+.custom-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder;
+    color: #3EB489;
+    padding-top: 5%;
+
+}
+
 
 main {
     flex: 1;
@@ -19,7 +33,7 @@ main {
 
 footer {
     position: absolute; /* might cause issues later, oh well */
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #313638;
     padding: 1rem;
     bottom: 0;
     width: 100%;
