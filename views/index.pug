@@ -1,3 +1,41 @@
 extends layout
 
 block content
+    button#myButton Click me
+    script.
+        let lat = 0;
+        let lng = 0;
+        if ("geolocation" in navigator) {
+            // Prompt user for permission to access their location
+            navigator.geolocation.getCurrentPosition(
+            // Success callback function
+            (position) => {
+            // Get the user's latitude and longitude coordinates
+            lat = position.coords.latitude;
+            lng = position.coords.longitude;
+
+            // Do something with the location data, e.g. display on a map
+            //console.log(`Latitude: ${lat}, longitude: ${lng}`);
+            },
+            // Error callback function
+            (error) => {
+            // Handle errors, e.g. user denied location sharing permissions
+            console.error("Error getting user location:", error);
+            }
+            );
+        } else {
+        // Geolocation is not supported by the browser
+        console.error("Geolocation is not supported by this browser.");
+        }
+
+        function myFunction() {
+            console.log("button clicked!");
+            console.log("your cords are:"+ lat + "," + lng);
+        }
+
+        // Attach a click event listener to the button
+        document.addEventListener('DOMContentLoaded', function () {
+            const myButton = document.getElementById('myButton');
+            myButton.addEventListener('click', myFunction);
+        });
+    
