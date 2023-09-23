@@ -7,7 +7,6 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(language='javascript' src='node_modules/bootstrap/.../bootstrap.min.js')
     link(href='https://fonts.googleapis.com/css?family=Montserrat&display=swap' rel='stylesheet')
-
   body
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.custom-navbar
       a.navbar(href='#')
@@ -17,15 +16,23 @@ html
       #navbarNav.collapse.navbar-collapse.mx-auto
         ul.navbar-nav
           li.nav-item.active
-            a.nav-link(href='#')
+            a.nav-link(href='/')
               | Home
               span.sr-only (current)
           li.nav-item
             a.nav-link(href='#') Commitments
           li.nav-item
-            a.nav-link.active(href='about') About
+            a.nav-link(href='about') About
           li.nav-item
-            a.nav-link.active(href='contact') Contact
+            a.nav-link(href='contact') Contact
+        ul.navbar-nav.ml-auto
+            li.nav-item
+              if isAuthenticated
+                a.nav-link(href='/logout', style='color: #3EB489;')
+                  | Log out
+              else
+                a.nav-link(href='/login', style='color: #3EB489;')
+                  | Login
 
     main
       link(href='https://fonts.googleapis.com/css?family=Montserrat&display=swap' rel='stylesheet')
