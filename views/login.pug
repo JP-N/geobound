@@ -1,0 +1,17 @@
+extends layout
+block content 
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+  h1= Login to #{title}
+  form
+    .form-group
+      label(for='exampleInputEmail1') Email address
+      input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email')
+      small#emailHelp.form-text.text-muted We&apos;ll never share your email with anyone else.
+    .form-group
+      label(for='exampleInputPassword1') Password
+      input#exampleInputPassword1.form-control(type='password' placeholder='Password')
+    .form-check
+      input#exampleCheck1.form-check-input(type='checkbox')
+      label.form-check-label(for='exampleCheck1') Check me out
+    button.btn.btn-primary(type='submit') Submit
+
