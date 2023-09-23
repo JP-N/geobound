@@ -73,6 +73,11 @@ app.get("/faq", function(req, res, next) {
   res.render("faq", { title: "FAQ"});
 });
 
+app.get("/commitments", function(req, res, next) {
+  var isAuthenticated = req.oidc.isAuthenticated();
+  res.render("commitments", { title: "Commitments", isAuthenticated});
+});
+
 // save a location in format (group, key, cords)
 client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
 
