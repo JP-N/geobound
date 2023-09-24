@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,7 +11,7 @@ var mongodb = require("mongodb");
 var { createClient } = require('redis');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://jpnogax:6QjqN7o8Swxvdjqu@cluster0.mkhv0jg.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -22,10 +24,10 @@ const { auth } = require('express-openid-connect');
 const config = {
   authRequired: false,
   auth0Logout: true,
-  secret: 'a long, randomly-generated string stored in env',
+  secret: process.env.AUTH_SECRET,
   baseURL: 'http://localhost:3000',
-  clientID: 'OhWMIGiRD314Mk8Wo7xElUkO9WokSVe3',
-  issuerBaseURL: 'https://dev-mg2bbanln4b8fu3b.us.auth0.com'
+  clientID: process.env.AUTH_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
 };
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
