@@ -50,6 +50,41 @@ async function run() {
 }
 run().catch(console.dir);
 
+// @todo may be better to keep one client just infinitely connected inside of a class, instead of connecting every time we need to do smth?
+async function getCommits(id) {
+  try {
+    await mongoClient.connect();
+    const db = await mongoClient.db("commitments");
+    const coll = await db.collection("commitments"); // @TODO this can def go in the original userdata db
+    const res = coll.find({
+      uid: id
+    });
+    return res;
+  } finally {
+    await mongoClient.close();
+  }
+}
+
+/*
+{
+  name: "a name",
+  lat: "latitutde",
+  lon: "longitude"
+}
+*/
+async function addCommit(commit) {
+  try {
+    await mongoClient.connect();
+    const db = await mongoClient.db("commitments");
+    const coll = await db.collection("commitments"); // @TODO this can def go in the original userdata db
+    const result = await coll.insertOne(commit);
+    console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    return result;
+  } finally {
+    await mongoClient.close();
+  }
+}
+
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 
@@ -75,7 +110,15 @@ app.get("/faq", function(req, res, next) {
 
 app.get("/commitments", function(req, res, next) {
   var isAuthenticated = req.oidc.isAuthenticated();
-  res.render("commitments", { title: "Commitments", isAuthenticated});
+  var cmts;
+  if (isAuthenticated) {
+    cmts = getCommits(req.oidc.user.sid);
+  }
+  res.render("commitments", {
+    title: "Commitments",
+    isAuthenticated,
+    cmts
+  });
 });
 
 // save a location in format (group, key, cords)
@@ -86,10 +129,8 @@ client.get('UIowa', 'IMU').then(data => {
   console.log(data); // prints coordinates in geoJSON format
 })
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -105,6 +146,35 @@ app.get('/', (req, res) => {
   console.log(isAuthenticated);
   res.render('index', { isAuthenticated });
 });
+
+// post request for sent commitments.
+app.post("/submit_commitment", (req, res) => {
+  var isAuthenticated = req.oidc.isAuthenticated();
+  if(isAuthenticated) {
+    var name = req.body.name || "";
+    var lat = req.body.lat;
+    var lon = req.body.lon;
+    
+    // small verification. test if coords are "valid"
+    const gd = /^[1-9]\d{0,10}(\.\d{0,10})?$/; // 'good decimal'
+    if(!gd.test(lat) || !gd.test(lon) || !name || name.length >= 250 /* arbitrary limit */) {
+      res.statusCode(400);
+      res.send("Invalid form submitted.");
+    }
+    
+    const res = addCommit({ uid: req.oidc.user.id, name, lat, lon });
+    if(!res.insertedId) {
+      res.statusCode(500);
+      res.send("An error occured whilst communicating to the database.");
+    } else {
+      res.statusCode(200);
+      res.send("Success. :)");
+    }
+  } else {
+    res.statusCode(403);
+    res.send("You do not have permission to use this endpoint.");
+  }
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

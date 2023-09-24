@@ -5,5 +5,61 @@ block content
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    .container.text-center.myBlur
-      h1.commitBodyText.rounded-bg Manage your commitments below:
+    if cmts
+      // necessary to not redirect on submit
+      iframe#dummyframe(name='dummyframe' style='display: none;')
+
+      .container.text-center.myBlur
+        h1.commitBodyText.rounded-bg Manage your commitments below.
+      
+      form(id="commitment_submit", target="dummyframe")
+        label("name") Name: 
+        input(type="text", id="name", name="name")
+        label("name") Latitude: 
+        input(type="text", id="lat", name="lat")
+        label("name") Longitude: 
+        input(type="text", id="lon", name="lon")
+        input(type="submit" value="Submit")
+
+      table
+        tr
+          th ID
+          th Name
+          th Latitude
+          th Longitude
+          th Action
+        if cmts
+          each cm in cmts
+            // this details *one* commitment. its implemented as a table row.
+            // [ id ] [ name ] [ lat ] [ lon ]
+            // you can do xss with this. don't do that :)
+            tr
+              td #{cm.id}
+              td #{cm.name}
+              td #{lat}
+              td #{lon}
+              td X
+
+      script.
+        document.addEventListener("DOMContentLoaded", () => {
+          const form = document.getElementById("commitment_submit");
+          form.addEventListener("submit", function (e) {
+            e.preventDefault(); // prevent the default form submission
+            const fd = new FormData(form)
+
+            fetch("/submit_commitment", {
+              method: "POST",
+              body: fd,
+            }).then((resp) => {
+              if (resp.ok) {
+                console.log("EEEYUUUPPPP");
+              } else {
+                console.log("HELL NO");
+              }
+            }).catch((error) => {
+              console.error("Error:", error);
+            });
+          });
+        });
+    else 
+      p You don't have permission to view this page.

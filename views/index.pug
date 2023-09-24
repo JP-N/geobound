@@ -11,7 +11,7 @@ block content
     button#myButton Click me
     script.
         let lat = 0;
-        let lng = 0;
+        let lon = 0;
         if ("geolocation" in navigator) {
             // Prompt user for permission to access their location
             navigator.geolocation.getCurrentPosition(
@@ -19,10 +19,10 @@ block content
             (position) => {
             // Get the user's latitude and longitude coordinates
             lat = position.coords.latitude;
-            lng = position.coords.longitude;
+            lon = position.coords.longitude;
 
             // Do something with the location data, e.g. display on a map
-            //console.log(`Latitude: ${lat}, longitude: ${lng}`);
+            //console.log(`Latitude: ${lat}, longitude: ${lon}`);
             },
             // Error callback function
             (error) => {
