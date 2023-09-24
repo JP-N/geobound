@@ -26,11 +26,14 @@ Our **middleware** for account login and authentication uses Auth0.
 
 An **honorable** shoutout goes to the **Google Maps API** for allowing us to set locations.
 
-## Challenges we ran into
+## Challenges we ran into 
 We had a few challenges here, nothing that we couldn't overcome, but we're proud to admit that:
--Three out of four members have never used PUG before
--None of us have ever used MongoDB or Auth0 before
--Sleep turned out to be critical
+
+• Three out of four members have never used PUG before
+
+• None of us have ever used MongoDB or Auth0 before
+
+• Sleep turned out to be critical
 
 ## Accomplishments that we're proud of
 We are a **proud** team just to be here, and love that we had the opportunity to use different frameworks to bring a full stack project together.
