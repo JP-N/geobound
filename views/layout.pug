@@ -20,6 +20,7 @@ html
               | Home
               span.sr-only (current)
           li.nav-item
+          if isAuthenticated
             a.nav-link(href='commitments') Commitments
           li.nav-item
             a.nav-link(href='about') About
