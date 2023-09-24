@@ -82,8 +82,10 @@ app.get("/commitments", function(req, res, next) {
 client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
 
 client.get('UIowa', 'IMU').then(data => {
+  console.log("DATA BELOW");
   console.log(data); // prints coordinates in geoJSON format
 })
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
