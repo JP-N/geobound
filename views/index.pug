@@ -5,44 +5,7 @@ block content
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
     body
-        .container.text-right.align-text-bottom
-            h1.display-2.custom-heading.rounded-bg Stay accountable, wherever
-                |  you are.
-    button#myButton Click me
-    script.
-        let lat = 0;
-        let lon = 0;
-        if ("geolocation" in navigator) {
-            // Prompt user for permission to access their location
-            navigator.geolocation.getCurrentPosition(
-            // Success callback function
-            (position) => {
-            // Get the user's latitude and longitude coordinates
-            lat = position.coords.latitude;
-            lon = position.coords.longitude;
+        .container.text-center.align-text-bottom
+            h1.display-2.custom-heading.rounded-bg Stay accountable, wherever you are.
 
-            // Do something with the location data, e.g. display on a map
-            //console.log(`Latitude: ${lat}, longitude: ${lon}`);
-            },
-            // Error callback function
-            (error) => {
-            // Handle errors, e.g. user denied location sharing permissions
-            console.error("Error getting user location:", error);
-            }
-            );
-        } else {
-        // Geolocation is not supported by the browser
-        console.error("Geolocation is not supported by this browser.");
-        }
-
-        function myFunction() {
-            console.log("button clicked!");
-            console.log("your cords are:"+ lat + "," + lng);
-        }
-
-        // Attach a click event listener to the button
-        document.addEventListener('DOMContentLoaded', function () {
-            const myButton = document.getElementById('myButton');
-            myButton.addEventListener('click', myFunction);
-        });
     

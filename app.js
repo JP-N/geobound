@@ -5,6 +5,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bodyParser = require('body-parser');
 
 var mongodb = require("mongodb");
 var { createClient } = require('redis');
@@ -16,7 +17,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-
+app.use(bodyParser.json());
 const { requiresAuth } = require('express-openid-connect');
 const { auth } = require('express-openid-connect');
 
@@ -38,61 +39,23 @@ const mongoClient = new MongoClient(uri, {
   }
 });
 
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await mongoClient.connect();
-    // Send a ping to confirm a successful connection
-    await mongoClient.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await mongoClient.close();
-  }
-}
-run().catch(console.dir);
+let db;
 
-// @todo may be better to keep one client just infinitely connected inside of a class, instead of connecting every time we need to do smth?
-async function getCommits(id) {
+(async () => {
   try {
-    await mongoClient.connect();
-    const db = await mongoClient.db("commitments");
-    const coll = await db.collection("commitments"); // @TODO this can def go in the original userdata db
-    const res = coll.find({
-      uid: id
-    });
-    return res;
-  } finally {
-    await mongoClient.close();
-  }
-}
+    const client = await mongoClient.connect(uri, { useUnifiedTopology: true });
+    console.log('MongoDB Connected');
+    db = client.db('commitments');
 
-/*
-{
-  name: "a name",
-  lat: "latitutde",
-  lon: "longitude"
-}
-*/
-async function addCommit(commit) {
-  try {
-    await mongoClient.connect();
-    const db = await mongoClient.db("commitments");
-    const coll = await db.collection("commitments"); // @TODO this can def go in the original userdata db
-    const result = await coll.insertOne(commit);
-    console.log(`A document was inserted with the _id: ${result.insertedId}`);
-    return result;
-  } finally {
-    await mongoClient.close();
+  } catch (error) {
+    console.error('Failed to connect to MongoDB', error);
+    process.exit(1); // exit with a failure code
   }
-}
+})();
+
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
-
-// Tile38 Connection
-var Tile38 = require('tile38');
-var client = new Tile38({host: process.env.TILE38_HOST, port: process.env.TILE38_PORT, debug: true });
 
 app.get('/profile', requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
@@ -110,29 +73,52 @@ app.get("/faq", function(req, res, next) {
   res.render("faq", { title: "FAQ"});
 });
 
-app.get("/commitments", function(req, res, next) {
+app.get("/commitments", requiresAuth(), async (req, res) => {
+
   var isAuthenticated = req.oidc.isAuthenticated();
-  var cmts;
+  let userCommitments = [];
+
   if (isAuthenticated) {
-    cmts = getCommits(req.oidc.user.sid);
+    const sub = req.oidc.user.sub;
+    const commitmentsCollection = db.collection('commitments');
+
+    // Awaiting the result from the database
+    userCommitments = await commitmentsCollection.find({ sub: sub }).toArray();
+
   }
-  res.render("commitments", {
-    title: "Commitments",
-    isAuthenticated,
-    cmts
-  });
+  console.log(userCommitments);
+  res.render("commitments", { isAuthenticated, userCommitments });
 });
 
-// save a location in format (group, key, cords)
-client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
+app.post('/commitments', async (req, res) => {
+  try {
+    const commitment = {
+      commitment_name: req.body.commitment_name,
+      lat: req.body.lat,
+      long: req.body.long,
+      sub: req.oidc.user.sub
+    };
+    const result = await db.collection('commitments').insertOne(commitment);
+    res.json({ success: true, message: 'Data inserted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to insert data' });
+  }
+});
 
-client.get('UIowa', 'IMU').then(data => {
-  console.log("DATA BELOW");
-  console.log(data); // prints coordinates in geoJSON format
-})
+
+app.get('/', (req, res) => {
+  var isAuthenticated = req.oidc.isAuthenticated();
+  console.log(isAuthenticated);
+  res.render('index', { isAuthenticated });
+});
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -143,40 +129,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug'); // Set Pug as the view engine
 
 app.use('/users', usersRouter);
-app.get('/', (req, res) => {
-  var isAuthenticated = req.oidc.isAuthenticated();
-  console.log(isAuthenticated);
-  res.render('index', { isAuthenticated });
-});
 
-// post request for sent commitments.
-app.post("/submit_commitment", (req, res) => {
-  var isAuthenticated = req.oidc.isAuthenticated();
-  if(isAuthenticated) {
-    var name = req.body.name || "";
-    var lat = req.body.lat;
-    var lon = req.body.lon;
-    
-    // small verification. test if coords are "valid"
-    const gd = /^[1-9]\d{0,10}(\.\d{0,10})?$/; // 'good decimal'
-    if(!gd.test(lat) || !gd.test(lon) || !name || name.length >= 250 /* arbitrary limit */) {
-      res.statusCode(400);
-      res.send("Invalid form submitted.");
-    }
-    
-    const res = addCommit({ uid: req.oidc.user.id, name, lat, lon });
-    if(!res.insertedId) {
-      res.statusCode(500);
-      res.send("An error occured whilst communicating to the database.");
-    } else {
-      res.statusCode(200);
-      res.send("Success. :)");
-    }
-  } else {
-    res.statusCode(403);
-    res.send("You do not have permission to use this endpoint.");
-  }
-})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
