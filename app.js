@@ -20,6 +20,7 @@ const { auth } = require('express-openid-connect');
 
 const config = {
   authRequired: false,
+  postLoginRedirect: 'http://geobound.tech/',
   auth0Logout: true,
   secret: process.env.AUTH_SECRET,
   baseURL: 'http://geobound.tech',
