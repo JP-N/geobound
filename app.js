@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bodyParser = require('body-parser');
 
 var mongodb = require("mongodb");
 var { createClient } = require('redis');
@@ -14,7 +15,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-
+app.use(bodyParser.json());
 const { requiresAuth } = require('express-openid-connect');
 const { auth } = require('express-openid-connect');
 
@@ -36,26 +37,23 @@ const mongoClient = new MongoClient(uri, {
   }
 });
 
-async function run() {
+let db;
+
+(async () => {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await mongoClient.connect();
-    // Send a ping to confirm a successful connection
-    await mongoClient.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await mongoClient.close();
+    const client = await mongoClient.connect(uri, { useUnifiedTopology: true });
+    console.log('MongoDB Connected');
+    db = client.db('commitments');
+
+  } catch (error) {
+    console.error('Failed to connect to MongoDB', error);
+    process.exit(1); // exit with a failure code
   }
-}
-run().catch(console.dir);
+})();
+
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
-
-// Tile38 Connection
-var Tile38 = require('tile38');
-var client = new Tile38({host: '172.17.51.158', port: 9851, debug: true });
 
 app.get('/profile', requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
@@ -73,18 +71,47 @@ app.get("/faq", function(req, res, next) {
   res.render("faq", { title: "FAQ"});
 });
 
-app.get("/commitments", function(req, res, next) {
+app.get("/commitments", requiresAuth(), async (req, res) => {
+
   var isAuthenticated = req.oidc.isAuthenticated();
-  res.render("commitments", { title: "Commitments", isAuthenticated});
+  let userCommitments = [];
+
+  if (isAuthenticated) {
+    const sub = req.oidc.user.sub;
+    const commitmentsCollection = db.collection('commitments');
+
+    // Awaiting the result from the database
+    userCommitments = await commitmentsCollection.find({ sub: sub }).toArray();
+
+  }
+  console.log(userCommitments);
+  res.render("commitments", { isAuthenticated, userCommitments });
 });
 
-// save a location in format (group, key, cords)
-client.set('UIowa', 'IMU', [41.6631103,-91.5383735]); // cords for the IMU for testing
+app.post('/commitments', async (req, res) => {
+  try {
+    const commitment = {
+      commitment_name: req.body.commitment_name,
+      lat: req.body.lat,
+      long: req.body.long,
+      sub: req.oidc.user.sub
+    };
+    const result = await db.collection('commitments').insertOne(commitment);
+    res.json({ success: true, message: 'Data inserted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to insert data' });
+  }
+});
 
-client.get('UIowa', 'IMU').then(data => {
-  console.log("DATA BELOW");
-  console.log(data); // prints coordinates in geoJSON format
-})
+
+app.get('/', (req, res) => {
+  var isAuthenticated = req.oidc.isAuthenticated();
+  console.log(isAuthenticated);
+  res.render('index', { isAuthenticated });
+});
+
+
 
 
 // view engine setup
@@ -100,11 +127,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug'); // Set Pug as the view engine
 
 app.use('/users', usersRouter);
-app.get('/', (req, res) => {
-  var isAuthenticated = req.oidc.isAuthenticated();
-  console.log(isAuthenticated);
-  res.render('index', { isAuthenticated });
-});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,6 +4,149 @@ block content
   head
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+
   body
-    .container.text-center.myBlur
-      h1.commitBodyText.rounded-bg Manage your commitments below:
+    .container.text-center
+      if isAuthenticated
+        h1.commitBodyText.rounded-bg Welcome back! Let's tackle today.
+        p.rounded-bg Click on a commitment to view it, or add a new one.
+        .list-group.mt-4.w-50.mx-auto
+          if userCommitments
+            .list-group.myBlur
+              a.list-group-item.list-group-item-action.border.border-light.list-group-item-warning(data-bs-toggle='modal' data-bs-target='#addCommitmentModal') Add a new commitment
+              each commitItem in userCommitments
+                .list-group-item.dark-green.list-group-item-success.list-group-item-action.border.border-light.d-flex.justify-content-between.align-items-center(type='button' data-commitment=JSON.stringify(commitItem))
+                  span= commitItem.commitment_name
+                  button.btn.btn-sm.btn-success(type='button') Check In
+
+    #myModal.modal.fade(tabindex='-1')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Commitment Details
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p#modalContent Commitment information will appear here.
+
+    #addCommitmentModal.modal.fade(tabindex='-1' aria-labelledby='addCommitmentLabel' aria-hidden='true')
+      .modal-dialog.modal-lg
+        .modal-content
+          .modal-header
+            h5.modal-title#addCommitmentLabel Please place a marker on the map.
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            // Map container
+            #map(style='height: 400px;')
+            // Form for commitment name
+            form#addCommitmentForm
+              .mb-3.pt-3
+                input#commitmentName.form-control(type='text', name='commitment_name', placeholder='Enter commitment name')
+          .modal-footer
+            button#saveTest.btn.btn-success.save-details(type='button' name='save-details' data-toggle='modal' data-target='#myModalList' data-dismiss='modal') Save
+
+  script.
+    let map;
+    let marker;
+
+    function initMap() {
+      const defaultCenter = {lat: 41.661240, lng: -91.530128};
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 13,
+        center: defaultCenter
+      });
+
+      // Add a click event to add a marker
+      map.addListener('click', function (event) {
+        placeMarker(event.latLng);
+      });
+    }
+
+    function placeMarker(location) {
+      if (marker) {
+        marker.setMap(null);
+      }
+      marker = new google.maps.Marker({
+        position: location,
+        map: map
+      });
+      map.panTo(location);
+
+      // Log the position of the marker
+      console.log("Marker placed at:", location.lat(), location.lng());
+    }
+
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmYnsI5F25IwP3z45HwMfn0N_xSUuGa6A&callback=initMap")
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      var saveButton = document.getElementById('saveTest');
+
+      if (saveButton) {
+        saveButton.addEventListener('click', function () {
+          let commitmentName = document.getElementById('commitmentName').value;
+          let commitmentLocation = document.getElementById('commitmentLocation') ? document.getElementById('commitmentLocation').value : null;
+          console.log(commitmentName, commitmentLocation);
+      // Check if a marker is placed
+      if (!marker) {
+        console.error("Please place a marker on the map.");
+        return;
+      }
+
+      // Get lat and lng from the marker's position
+      let lat = marker.getPosition().lat();
+      let long = marker.getPosition().lng();
+
+      let data = {
+        commitment_name: commitmentName,
+        lat: lat,
+        long: long
+        }
+
+      fetch('/commitments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+              .then(response => response.json())
+              .then(data => {
+                console.log('Success:', data);
+                location.reload(); // Refreshes the page
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+      });
+
+      var listItems = document.querySelectorAll('.list-group-item');
+      var addCommitmentModal = new bootstrap.Modal(document.getElementById('addCommitmentModal'));
+
+      listItems.forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          if (e.target.classList.contains('btn')) return;
+
+          const data = e.currentTarget.getAttribute('data-commitment');
+          if (e.currentTarget.hasAttribute('data-bs-target')) {
+            addCommitmentModal.show();
+          } else if (data) {
+            document.querySelector('#modalContent').innerText = JSON.stringify(JSON.parse(data), null, 2);
+            var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+            myModal.show();
+          }
+        });
+        });
+        }
+        });
+
+
+
+
+
+
+
+
+
+
