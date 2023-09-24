@@ -59,11 +59,15 @@ app.get('/profile', requiresAuth(), (req, res) => {
 });
 
 app.get("/about", function(req, res, next) {
-  res.render("about", { title: "About Geobound"});
+  var isAuthenticated = req.oidc.isAuthenticated();
+  res.render("about", { isAuthenticated});
 });
 
 app.get("/contact", function(req, res, next) {
-  res.render("contact", { title: "Contact"});
+
+  var isAuthenticated = req.oidc.isAuthenticated();
+
+  res.render("contact", { isAuthenticated});
 });
 
 app.get("/faq", function(req, res, next) {
