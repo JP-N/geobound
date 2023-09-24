@@ -16,6 +16,23 @@ body {
     background-attachment: fixed;
 }
 
+.custom-heading3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder;
+    color: #3EB489;
+    padding-top: 0%;
+    border-radius: 60px;
+    text-shadow: 0.5px 0.5px 1px black;}
+
+.custom-heading2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder;
+    color: #3EB489;
+    padding-top: 3%;
+    backdrop-filter: blur(4px) saturate(60%);
+    border-radius: 60px;
+}
+
 .custom-heading {
     font-family: 'Montserrat', sans-serif;
     font-weight: bolder;
@@ -25,6 +42,15 @@ body {
     border-radius: 60px;
 
 }
+
+.custom-box {
+    background: #3EB489;
+    padding: 20px;
+    margin: 20px;
+    color: #FAFAFF;
+    border-radius: 1em;
+}
+
 .commitBodyText{
     font-family: 'Montserrat', sans-serif;
     font-weight: bolder;
@@ -54,6 +80,10 @@ body {
     border-color: #004f30
 }
 
+.cushadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
 main {
     flex: 1;
     padding: 2em;
