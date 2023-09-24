@@ -70,7 +70,7 @@ app.get("/faq", function(req, res, next) {
   res.render("faq", { title: "FAQ"});
 });
 
-app.get("/commitments", requiresAuth(), async (req, res) => {
+app.get("/commitments", async (req, res) => {
 
   var isAuthenticated = req.oidc.isAuthenticated();
   let userCommitments = [];
