@@ -22,6 +22,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.AUTH_SECRET,
+  returnTo: 'http://geobound.tech',
   baseURL: 'http://geobound.tech',
   clientID: process.env.AUTH_CLIENT_ID,
   issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
@@ -70,7 +71,7 @@ app.get("/faq", function(req, res, next) {
   res.render("faq", { title: "FAQ"});
 });
 
-app.get("/commitments", async (req, res) => {
+app.get("/commitments", requiresAuth(), async (req, res) => {
 
   var isAuthenticated = req.oidc.isAuthenticated();
   let userCommitments = [];
