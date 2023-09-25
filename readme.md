@@ -27,6 +27,31 @@ Our **middleware** for account login and authentication uses Auth0.
 
 An **honorable** shoutout goes to the **Google Maps API** for allowing us to set locations.
 
+## Who Are We? 
+The Geobound team is made up of 4 students hailing from the University of Iowa, from different grade levels. Feel free to connect with us on LinkedIn, and learn more about who we are!
+
+### • JP Noga - [LinkedIn](https://www.linkedin.com/in/jp-noga/)
+**Lead Project Engineer, Full Stack Developer**
+
+JP was responsible for planning the outline, selecting the tech stack, and programming the technological functions between frameworks, as well as guiding the team through the project.
+
+### •  Rogelio Valle - [LinkedIn](https://www.linkedin.com/in/rvalleia/)
+**Solutions Expert, Back End Developer**
+
+Rogelio played a key role in working out the logical flow of the project, and overcoming the systematical challenges that arose with using API's and GPS.
+
+### • Steven Vanni - [LinkedIn](https://www.linkedin.com/in/svanni/)
+**Quality Control, Full Stack Developer**
+
+Steven ensured that the project was running smoothly, that the code was clean, secure, and functional. He resolved technical bugs, as well as flaws in design.
+
+### • Ram Abbaraju - [LinkedIn](https://www.linkedin.com/in/ram-abbaraju-9ba594237/)
+**UI/UX Designer, Front End Developer**
+
+Ram was placed in charge of making the project filled with content, information, and that anyone could pick up on what the project was about, and how to easily use it.
+
+
+
 ## Challenges we ran into - 
 We had a few challenges here, nothing that we couldn't overcome, but we're proud to admit that:
 
