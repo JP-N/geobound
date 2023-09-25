@@ -22,7 +22,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.AUTH_SECRET,
-  baseURL: 'http://geobound.tech',
+  baseURL: 'http://geobound.tech/',
   clientID: process.env.AUTH_CLIENT_ID,
   issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
 };
