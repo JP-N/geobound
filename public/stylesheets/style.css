@@ -1,11 +1,11 @@
 html {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Gabarito', sans-serif;
     font-size: 20px;
     line-height: 1;
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Gabarito', sans-serif;
     font-size: 20px;
     line-height: 1;
     background-color: #FAFAFF;
@@ -22,7 +22,8 @@ body {
     color: #3EB489;
     padding-top: 0%;
     border-radius: 60px;
-    text-shadow: 0.5px 0.5px 1px black;}
+    text-shadow: 0.5px 0.5px 1px black;
+}
 
 .custom-heading2 {
     font-family: 'Montserrat', sans-serif;
@@ -34,11 +35,9 @@ body {
 }
 
 .custom-heading {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bolder;
-    color: #3EB489;
+    font-family: 'Gabarito', sans-serif;
+    color: #11593f;
     padding-top: 5%;
-    backdrop-filter: blur(4px) saturate(60%);
     border-radius: 60px;
 
 }
@@ -52,7 +51,7 @@ body {
 }
 
 .commitBodyText{
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Gabarito', sans-serif;
     font-weight: bolder;
     color: #2e755c;
     padding-top: 5%;
