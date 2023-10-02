@@ -9,6 +9,8 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # secrets
 .env
+geobound.tech.csr
+geobound.tech.key
 
 # os-specific garbage
 .DS_STORE
