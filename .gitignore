@@ -18,3 +18,4 @@ Thumbs.db
 *.iml
 .idea
 /env
+/.vscode/
